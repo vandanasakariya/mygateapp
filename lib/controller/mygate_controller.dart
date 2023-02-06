@@ -6,16 +6,19 @@ class MyGateController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
+    print("response----- 0:- 00000 ");
+
     SearchMethod();
     super.onInit();
   }
 
   Rx<CityModal> cityModal = CityModal().obs;
 
-  Future<void> SearchMethod() async {
-    final result = await CityService.getCity();
+  Future<CityModal?> SearchMethod() async {
+    final result = await CityService.getdata();
     if (result != null) {
-      cityModal.value.msg = result as String?;
+      cityModal.value = result ;
     }
+
   }
 }

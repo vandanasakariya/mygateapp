@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mygateapp/controller/mygate_controller.dart';
 import 'package:mygateapp/navigation_utils/size_utils.dart';
 import 'package:mygateapp/theam/app_string.dart';
 import 'package:mygateapp/widget/custom_text.dart';
@@ -8,7 +10,8 @@ import '../../navigation_utils/navigation.dart';
 import '../../navigation_utils/routes.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+   WelcomePage({Key? key}) : super(key: key);
+  MyGateController myGateController=Get.put(MyGateController());
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
