@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mygateapp/api/city_modal.dart';
 import 'package:mygateapp/api/service.dart';
@@ -5,20 +6,22 @@ import 'package:mygateapp/api/service.dart';
 class MyGateController extends GetxController {
   @override
   void onInit() {
-    // TODO: implement onInit
     print("response----- 0:- 00000 ");
 
-    SearchMethod();
+    getCityList();
     super.onInit();
   }
 
-  Rx<CityModal> cityModal = CityModal().obs;
+  Rx<CityModal> cityList = CityModal().obs;
+  final first = TextEditingController();
+  final second = TextEditingController();
+  RxInt isCheckApi = 0.obs;
 
-  Future<CityModal?> SearchMethod() async {
+  Future<void> getCityList() async {
     final result = await CityService.getdata();
     if (result != null) {
-      cityModal.value = result ;
+      cityList.value = result;
+      print("cccc---${cityList.value.city}");
     }
-
   }
 }
