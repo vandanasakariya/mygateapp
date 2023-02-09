@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mygateapp/api/city_modal.dart';
 import 'package:mygateapp/theam/app_string.dart';
 import 'package:mygateapp/widget/custom_text.dart';
+import '../../api/city_modal.dart';
 import '../../controller/mygate_controller.dart';
 import '../../navigation_utils/navigation.dart';
 import '../../navigation_utils/routes.dart';
@@ -17,16 +17,17 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   final MyGateController myGateController = Get.put(MyGateController());
   bool _searchBoolean = false;
-
+  String search = "";
+  Rx<CityModal> list = CityModal().obs;
 
   @override
   void initState() {
-    //myGateController.getCityList(name:myGateController.first.text);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("ddd${myGateController.cityList.value.city}");
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -53,7 +54,7 @@ class _FirstPageState extends State<FirstPage> {
                       setState(() {
                         _searchBoolean = false;
                       });
-                      print("object");
+                      print("clear  ");
                     },
                     icon: Icon(Icons.clear),
                   ),
@@ -62,41 +63,65 @@ class _FirstPageState extends State<FirstPage> {
         body: Obx(
           () => Column(
             children: [
-              !_searchBoolean
-                  ? Expanded(
-                      child: ListView.separated(
-                        itemCount:
-                            myGateController.cityList.value.city?.length ?? 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  child: Text(
-                                      "${myGateController.cityList.value.city?[index]}"),
-                                  onTap: () {
-                                    print("Dfffd");
-                                    Navigation.pushNamed(Routes.secondPage,
-                                        arg: {
-                                          "apidata": myGateController
-                                              .cityList.value.city?[index]
-                                        });
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Divider(
-                            thickness: 1,
-                            color: Colors.grey.shade100,
-                          );
-                        },
-                      ),
-                    )
-                  : _searchListView(),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: myGateController.cityList.value.city?.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (search.isEmpty) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: GestureDetector(
+                              child: Text(
+                                  "${myGateController.cityList.value.city?[index]}"),
+                              onTap: () {
+                                print("Dfffd");
+                                Navigation.pushNamed(Routes.secondPage, arg: {
+                                  "apidata": myGateController
+                                      .cityList.value.city?[index]
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    if (myGateController.cityList.value.city![index]
+                        .toUpperCase()
+                        .contains(search)) {
+                      return ListTile(
+                        title:
+                            Text(myGateController.cityList.value.city![index]),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: GestureDetector(
+                            child: Text(
+                                "${myGateController.cityList.value.city?[index]}"),
+                            onTap: () {
+                              print("Dfffd");
+                              Navigation.pushNamed(Routes.secondPage, arg: {
+                                "apidata":
+                                    myGateController.cityList.value.city?[index]
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      thickness: 1,
+                      color: Colors.grey.shade100,
+                    );
+                  },
+                ),
+              )
             ],
           ),
         ),
@@ -108,8 +133,8 @@ class _FirstPageState extends State<FirstPage> {
     return ListView.builder(
         itemCount: myGateController.cityList.value.city?.length ?? 0,
         itemBuilder: (context, index) {
-          var data= myGateController.cityList.value.city?.length ?? 0;
-          return  Card(
+          var data = myGateController.cityList.value.city?.length ?? 0;
+          return Card(
               child: ListTile(
                   title: Text(myGateController.cityList.value.city![index])));
         });
@@ -117,9 +142,9 @@ class _FirstPageState extends State<FirstPage> {
 
   Widget _searchTextField() {
     return TextField(
-      onChanged: (String s) {
+      onChanged: (value) {
         setState(() {
-         myGateController.second.text;
+          search = value;
         });
       },
       autofocus: true,
