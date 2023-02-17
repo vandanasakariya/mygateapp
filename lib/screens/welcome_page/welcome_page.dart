@@ -28,38 +28,40 @@ class _WelcomePageState extends State<WelcomePage> {
           exit(0);
         },
         child: Scaffold(
-          body: Column(
-            children: [
-              Container(
-                child: Image.asset(
-                  height: SizeUtils.verticalBlockSize*60,
-                  width: SizeUtils.horizontalBlockSize*100,
-                  AppImage.firstimage,
-                ),
-              ),
-              Padding(
-                padding:  EdgeInsets.only(top: SizeUtils.horizontalBlockSize*1),
-                child: InkWell(
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: SizeUtils.horizontalBlockSize * 13,
-                    width: SizeUtils.verticalBlockSize * 20,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: Colors.pinkAccent.shade100,
-                    ),
-                    child: CustomText(
-                      text: AppString.addYourHome,
-                      fontSize: SizeUtils.fSize_16(),
-                    ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  child: Image.asset(
+                    height: SizeUtils.verticalBlockSize*60,
+                    width: SizeUtils.horizontalBlockSize*100,
+                    AppImage.firstimage,
                   ),
-                  onTap: () {
-                    Navigation.pushNamed(Routes.firstPage);
-                    print("tap");
-                  },
                 ),
-              ),
-            ],
+                Padding(
+                  padding:  EdgeInsets.only(top: SizeUtils.horizontalBlockSize*1),
+                  child: InkWell(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: SizeUtils.horizontalBlockSize * 13,
+                      width: SizeUtils.verticalBlockSize * 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.pinkAccent.shade100,
+                      ),
+                      child: CustomText(
+                        text: AppString.addYourHome,
+                        fontSize: SizeUtils.fSize_16(),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigation.pushNamed(Routes.firstPage);
+                      print("tap");
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

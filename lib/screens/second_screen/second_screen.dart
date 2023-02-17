@@ -27,9 +27,10 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
-   myGateController.first.text= data["apidata"];
-    print("myyyyy${myGateController.first.text}");
-    //myGateController.cityList.value.city?.length=myGateController.first as int;
+   myGateController.cityNameController.text= data["apidata"];
+    print("myyyyy${myGateController.cityNameController.text}");
+
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -49,7 +50,7 @@ class _SecondPageState extends State<SecondPage> {
               SizedBox(height: SizeUtils.horizontalBlockSize * 2),
               CustomTextField(
                 contentPadding: EdgeInsets.fromLTRB(15, 0, 20, 11),
-                controller: myGateController.first,
+                controller: myGateController.cityNameController,
               ),
               SizedBox(height: SizeUtils.horizontalBlockSize * 4),
               CustomText(

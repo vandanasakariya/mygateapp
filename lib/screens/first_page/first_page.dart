@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mygateapp/api/city_modal.dart';
 import 'package:mygateapp/theam/app_string.dart';
 import 'package:mygateapp/widget/custom_text.dart';
-import '../../api/city_modal.dart';
 import '../../controller/mygate_controller.dart';
 import '../../navigation_utils/navigation.dart';
 import '../../navigation_utils/routes.dart';
@@ -11,23 +13,30 @@ class FirstPage extends StatefulWidget {
   FirstPage({Key? key}) : super(key: key);
 
   @override
-  State<FirstPage> createState() => _FirstPageState();
+  _FirstPageState createState() => _FirstPageState();
 }
 
 class _FirstPageState extends State<FirstPage> {
   final MyGateController myGateController = Get.put(MyGateController());
+  final TextEditingController searchCityController = TextEditingController();
+  List<CityModal>? recipes;
+  List<CityModal>? search_recipes;
+
   bool _searchBoolean = false;
-  String search = "";
-  Rx<CityModal> list = CityModal().obs;
+
+  String _searchText = "";
 
   @override
   void initState() {
     super.initState();
   }
 
+  List<String>? s = [];
+
   @override
   Widget build(BuildContext context) {
-    print("ddd${myGateController.cityList.value.city}");
+    // s = myGateController.cityList.value.city;
+    // print("ppppp${s}"); ketli var lagse
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -38,45 +47,41 @@ class _FirstPageState extends State<FirstPage> {
           actions: !_searchBoolean
               ? [
                   IconButton(
-                    onPressed: () async {
-                      setState(() {
-                        _searchBoolean = true;
-                        myGateController.cityList.value.city;
-                      });
-                      print("object");
-                    },
-                    icon: Icon(Icons.search),
-                  ),
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          _searchBoolean = true;
+                        });
+                      })
                 ]
               : [
                   IconButton(
-                    onPressed: () async {
-                      setState(() {
-                        _searchBoolean = false;
-                      });
-                      print("clear  ");
-                    },
-                    icon: Icon(Icons.clear),
-                  ),
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _searchBoolean = false;
+                        });
+                      })
                 ],
         ),
-        body: Obx(
-          () => Column(
-            children: [
-              Expanded(
+        body: Column(
+          children: [
+            Obx(
+              () => Expanded(
                 child: ListView.separated(
-                  itemCount: myGateController.cityList.value.city?.length ?? 0,
+                  itemCount: myGateController.searchCityList.length == 0
+                      ? (myGateController.cityList.value.city?.length ?? 0)
+                      : myGateController.searchCityList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if (search.isEmpty) {
+                    if (myGateController.searchCityList.isNotEmpty) {
                       return Column(
                         children: [
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: GestureDetector(
                               child: Text(
-                                  "${myGateController.cityList.value.city?[index]}"),
+                                  "${myGateController.searchCityList.value[index].city}"),
                               onTap: () {
-                                print("Dfffd");
                                 Navigation.pushNamed(Routes.secondPage, arg: {
                                   "apidata": myGateController
                                       .cityList.value.city?[index]
@@ -87,14 +92,7 @@ class _FirstPageState extends State<FirstPage> {
                         ],
                       );
                     }
-                    if (myGateController.cityList.value.city![index]
-                        .toUpperCase()
-                        .contains(search)) {
-                      return ListTile(
-                        title:
-                            Text(myGateController.cityList.value.city![index]),
-                      );
-                    }
+
                     return Column(
                       children: [
                         Padding(
@@ -121,53 +119,40 @@ class _FirstPageState extends State<FirstPage> {
                     );
                   },
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _searchListView() {
-    return ListView.builder(
-        itemCount: myGateController.cityList.value.city?.length ?? 0,
-        itemBuilder: (context, index) {
-          var data = myGateController.cityList.value.city?.length ?? 0;
-          return Card(
-              child: ListTile(
-                  title: Text(myGateController.cityList.value.city![index])));
-        });
-  }
-
   Widget _searchTextField() {
-    return TextField(
-      onChanged: (value) {
-        setState(() {
-          search = value;
-        });
+    return TextFormField(
+      onChanged: (val) {
+         final it = myGateController.cityModalList
+              .where((element) => element.city.toString()
+              .toLowerCase().trim()
+              .contains(val.toLowerCase()))
+              .toList();
+          myGateController.searchCityList.addAll(it);
+          print("search value-------------- :0 $val");
       },
+      controller: searchCityController,
       autofocus: true,
-      controller: myGateController.second,
-      //Display the keyboard when TextField is displayed
       cursorColor: Colors.white,
       style: TextStyle(
         color: Colors.white,
         fontSize: 20,
       ),
-      textInputAction: TextInputAction.search,
-      //Specify the action button on the keyboard
+      //textInputAction: TextInputAction.search,
       decoration: InputDecoration(
-        //Style of TextField
-        enabledBorder: UnderlineInputBorder(
-            //Default TextField border
-            borderSide: BorderSide(color: Colors.white)),
-        focusedBorder: UnderlineInputBorder(
-            //Borders when a TextField is in focus
-            borderSide: BorderSide(color: Colors.white)),
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        focusedBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         hintText: 'Search', //Text that is displayed when nothing is entered.
         hintStyle: TextStyle(
-          //Style of hintText
           color: Colors.white60,
           fontSize: 20,
         ),

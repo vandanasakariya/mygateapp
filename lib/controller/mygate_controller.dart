@@ -13,7 +13,9 @@ class MyGateController extends GetxController {
   }
 
   Rx<CityModal> cityList = CityModal().obs;
-  final first = TextEditingController();
+  RxList<CityModal> searchCityList = <CityModal>[].obs;
+  RxList<CityModal> cityModalList = <CityModal>[].obs;
+  final cityNameController = TextEditingController();
   final second = TextEditingController();
   RxInt isCheckApi = 0.obs;
 
@@ -21,7 +23,11 @@ class MyGateController extends GetxController {
     final result = await CityService.getdata();
     if (result != null) {
       cityList.value = result;
-      print("cccc---${cityList.value.city}");
+      // cityModalList.forEach((element) {
+      //   cityModalList.a(element.city);
+      // });
+      cityModalList.value.add(cityList.value);
+      print("cccc---${cityModalList.toJson()}");
     }
   }
 }
